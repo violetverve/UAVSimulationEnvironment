@@ -2,11 +2,10 @@ import socket
 import cv2
 import numpy as np
 
-HOST = '0.0.0.0'  # Listen on all interfaces
+HOST = '0.0.0.0'
 PORT = 5000
 
 # GStreamer pipeline for streaming
-# gst_pipeline = 'appsrc ! videoconvert ! x264enc ! rtph264pay ! udpsink host=192.168.1.103 port=5001'
 gst_pipeline = 'appsrc ! videoconvert ! x264enc tune=zerolatency bitrate=500 speed-preset=ultrafast ! rtph264pay ! udpsink host=192.168.1.103 port=5001'
 
 
@@ -53,9 +52,6 @@ while True:
         print("Failed to decode the image data.")
         continue
 
-    # Display frame information
-    # print(f"Received frame of shape: {frame.shape}")
-
     # Convert the frame to HSV color space
     hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     
@@ -86,20 +82,11 @@ while True:
         else:
             command = "WANDER"
 
-    # Process the frame (e.g., detect objects) and decide command
-    # For simplicity, we'll just send a fixed command
-    # command = "FORWARD"  # Example command
-    # print(f"Sending command: {command}")
-
     # Send control command back to the client
     command_bytes = command.encode('utf-8')
     conn.sendall(command_bytes)
-
-    # Debug: Print acknowledgment
-    # print(f"Sent command of length: {len(command_bytes)} bytes")
 
 conn.close()
 server_socket.close()
 out.release()
 print("Server closed.")
-
